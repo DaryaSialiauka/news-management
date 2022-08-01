@@ -24,20 +24,15 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	public boolean addUser(User user) throws AddUserDAOException {
-
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-		} catch (ClassNotFoundException e1) { // TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
 
-		try {
-			con = DriverManager.getConnection("jdbc:mysql://127.0.0.1/news?useSSL=false&serverTimezone=UTC",
-					"root", "7786405");
+		try{
+			Class.forName("com.mysql.cj.jdbc.Driver");
+
+			con = DriverManager.getConnection("jdbc:mysql://127.0.0.1/news?useSSL=false&serverTimezone=UTC", "root",
+					"7786405");
 
 			System.out.println("OK");
 
@@ -54,6 +49,9 @@ public class UserDAOImpl implements UserDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+
+		} catch (ClassNotFoundException e1) { // TODO Auto-generated catch block
+			throw new AddUserDAOException("Not added user");
 		} finally {
 			try {
 				if (rs != null) {
@@ -78,10 +76,8 @@ public class UserDAOImpl implements UserDAO {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-
 		}
 
-		/* */
 		return true;
 	}
 
