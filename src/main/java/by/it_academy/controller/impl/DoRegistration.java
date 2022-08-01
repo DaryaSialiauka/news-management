@@ -22,6 +22,7 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 public class DoRegistration implements Command {
 
@@ -36,23 +37,24 @@ public class DoRegistration implements Command {
 		String path;
 
 		User user = reqToUser(request);
-
+		
 		try {
+			addSessionUser(user,request);
 			add = provider.addUser(user);
 			if (add) {
+				delSessionUser(request);
 				path = request.getContextPath() + "?";
 				response.sendRedirect(path);
 			} else {
-
-				userNotAdded(userToReq(user), response);
+				userNotAdded("", response);
 			}
 		} catch (AddUserServiseException e) {
 
-			userNotAdded(userToReq(user), response);
+			userNotAdded("", response);
 
 		} catch (DataUserValidationException e) {
 
-			userNotAdded(userToReq(user) + errorListInput(e), response);
+			userNotAdded(errorListInput(e), response);
 
 		}
 	}
@@ -99,31 +101,23 @@ public class DoRegistration implements Command {
 		}
 		return new User(firstname, lastname, login, password, phone, email, datebirth, Role.USER);
 	}
-
-	private static String userToReq(User user) {
-		String param = "";
-
-		param += Attribute.SEPARATOR + Attribute.FIRSTNAME + Attribute.EQUALS + user.getFirstname();
-		param += Attribute.SEPARATOR + Attribute.LASTNAME + Attribute.EQUALS + user.getLastname();
-		param += Attribute.SEPARATOR + Attribute.LOGIN + Attribute.EQUALS + user.getLogin();
-		param += Attribute.SEPARATOR + Attribute.PHONE + Attribute.EQUALS + user.getPhone();
-		param += Attribute.SEPARATOR + Attribute.EMAIL + Attribute.EQUALS + user.getEmail();
-		param += Attribute.SEPARATOR + Attribute.DATEBIRTH + Attribute.EQUALS + calendarToStr(user.getDatebirth());
-
-		return param;
-	}
-
+ 
+	
 	private static Calendar strToCalendar(String date) throws ParseException {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		cal.setTime(sdf.parse(date));
 		return cal;
 	}
-
-	private static String calendarToStr(Calendar date) {
-		String dateStr = "";
-		dateStr += date.get(Calendar.YEAR) + "-" + (new DecimalFormat( "00" ).format(date.get(Calendar.MONTH) + 1)) + "-"
-				+ date.get(Calendar.DAY_OF_MONTH);
-		return dateStr;
+	 
+	private static void addSessionUser(User user, HttpServletRequest request) {
+		HttpSession session = request.getSession(true);
+		session.setAttribute("userbean", user);
 	}
+	
+	private static void delSessionUser(HttpServletRequest request) {
+		HttpSession session = request.getSession(true);
+		session.removeAttribute("userbean"); 
+	}
+
 }

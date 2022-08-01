@@ -1,10 +1,11 @@
 package by.it_academy.bean;
 
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class User {
-
+ 
 	private String firstname;
 	private String lastname;
 	private String login;

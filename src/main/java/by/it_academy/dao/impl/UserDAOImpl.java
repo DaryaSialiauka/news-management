@@ -1,5 +1,7 @@
 package by.it_academy.dao.impl;
 
+import java.util.Objects;
+
 import by.it_academy.bean.Role;
 import by.it_academy.bean.User;
 import by.it_academy.dao.UserDAO;
