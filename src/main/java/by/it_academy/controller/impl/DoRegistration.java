@@ -1,7 +1,6 @@
 package by.it_academy.controller.impl;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -18,7 +17,6 @@ import by.it_academy.service.exception.DataUserValidationException;
 import by.it_academy.util.Attribute;
 import by.it_academy.util.InputDataUserValidation;
 import by.it_academy.util.JSPPageName;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -101,13 +99,13 @@ public class DoRegistration implements Command {
 		}
 		return new User(firstname, lastname, login, password, phone, email, datebirth, Role.USER);
 	}
- 
+   
 	
 	private static Calendar strToCalendar(String date) throws ParseException {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		cal.setTime(sdf.parse(date));
-		return cal;
+		return cal;      
 	}
 	 
 	private static void addSessionUser(User user, HttpServletRequest request) {
@@ -117,7 +115,7 @@ public class DoRegistration implements Command {
 	
 	private static void delSessionUser(HttpServletRequest request) {
 		HttpSession session = request.getSession(true);
-		session.removeAttribute("userbean"); 
+		session.removeAttribute("userbean");  
 	}
 
 }

@@ -1,13 +1,19 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<jsp:useBean id="userbean" class="by.it_academy.bean.User"
-   scope="session"/>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> <%@ taglib
+prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<jsp:useBean id="now" class="java.util.Date" />
+
+<fmt:formatDate var="date" value="${now}" pattern="yyyy-MM-dd" />
+<fmt:formatDate
+  var="userdatebirth"
+  value="${userbean.datebirth.time}"
+  pattern="yyyy-MM-dd"
+/>
 <div class="row align-items-start">
   <form action="Controller" method="post">
     <input type="hidden" name="command" value="DO_REGISTRATION" />
     <div class="col-12 text-center text-danger">
       &nbsp;<c:out value="${param.ErrorRegistration}" />&nbsp;
-    </div> 
+    </div>
 
     <div class="col-6 offset-3 form-floating mb-2">
       <input
@@ -15,7 +21,7 @@
         class="form-control ${param.firstname_error_style}"
         id="firstname"
         name="firstname"
-        value="${userbean.firstname}"
+        value="${sessionScope.userbean.firstname}"
         placeholder="First name"
         required
       />
@@ -31,7 +37,7 @@
         class="form-control ${param.lastname_error_style}"
         id="lastname"
         name="lastname"
-        value="${userbean.lastname}"
+        value="${sessionScope.userbean.lastname}"
         placeholder="Last name"
         required
       />
@@ -42,17 +48,14 @@
     </div>
 
     <div class="col-6 offset-3 form-floating mb-2">
-      <jsp:useBean id="now" class="java.util.Date" />
-      <fmt:formatDate var="date" value="${now}" pattern="yyyy-MM-dd" />
-      <c:if test="${sessionScope.userbean eq }"><fmt:formatDate var="userdatebirth" value="${userbean.datebirth.time}" pattern="yyyy-MM-dd" /></c:if>
       <input
         type="date"
         class="form-control ${param.datebirth_error_style} ${param.datebirth_min_style}"
         id="date"
         name="datebirth"
-        value =${userdatebirth}
+        value="${userdatebirth}"
         placeholder="Date birth"
-        max=${date}
+        max="${date}"
         required
       />
       <label for="date" class="form-label">Date birth</label>
@@ -68,7 +71,7 @@
         class="form-control ${param.login_error_style}"
         id="login"
         name="login"
-        value="${userbean.login}"
+        value="${sessionScope.userbean.login}"
         placeholder="Login"
         required
       />
@@ -84,7 +87,7 @@
         class="form-control form-control-sm ${param.email_error_style}"
         id="email"
         name="email"
-        value="${userbean.email}"
+        value="${sessionScope.userbean.email}"
         placeholder="Email"
         required
       />
@@ -100,7 +103,7 @@
         class="form-control form-control-sm ${param.phone_error_style}"
         id="phone"
         name="phone"
-        value="${userbean.phone}"
+        value="${sessionScope.userbean.phone}"
         pattern="[\+]{0,1}375[\(]{0,1}[0-9]{2}[\)]{0,1}\d{3}[-]{0,1}\d{2}[-]{0,1}\d{2}"
         placeholder="+375(__)___-__-__"
         required

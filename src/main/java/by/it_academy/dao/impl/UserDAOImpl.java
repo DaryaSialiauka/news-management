@@ -1,5 +1,11 @@
 package by.it_academy.dao.impl;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Objects;
 
 import by.it_academy.bean.Role;
@@ -19,7 +25,63 @@ public class UserDAOImpl implements UserDAO {
 
 	public boolean addUser(User user) throws AddUserDAOException {
 
-		/* throw new AddUserDAOException("Not add user"); */
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e1) { // TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
+
+		try {
+			con = DriverManager.getConnection("jdbc:mysql://127.0.0.1/news?useSSL=false&serverTimezone=UTC",
+					"root", "7786405");
+
+			System.out.println("OK");
+
+			st = con.createStatement();
+
+			String sql = "INSERT INTO news.user(roles_id,login,password) VALUES(?,?,?)";
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setInt(1, 1);
+			ps.setString(2, user.getLogin());
+			ps.setString(3, user.getPassword());
+
+			ps.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			try {
+				if (st != null) {
+					st.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			try {
+				if (con != null) {
+					con.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+		/* */
 		return true;
 	}
 
