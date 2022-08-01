@@ -23,6 +23,7 @@ public class UserDAOImpl implements UserDAO {
 
 	public boolean addUser(User user) throws AddUserDAOException {
 		Connection con = null;
+		PreparedStatement ps = null;
 
 		try{
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -31,14 +32,14 @@ public class UserDAOImpl implements UserDAO {
 					"7786405");
 
 			String sql = "INSERT INTO news.user(roles_id,login,password) VALUES(?,?,?)";
-			PreparedStatement ps = con.prepareStatement(sql);
+			ps = con.prepareStatement(sql);
 
 			ps.setInt(1, 2);
 			ps.setString(2, user.getLogin());
 			ps.setString(3, user.getPassword());
 
 			ps.executeUpdate();
-		} catch (SQLException |ClassNotFoundException e1) { // TODO Auto-generated catch block
+		} catch (SQLException | ClassNotFoundException e) { // TODO Auto-generated catch block
 			throw new AddUserDAOException("Not added user");
 		} finally {
 			try {
