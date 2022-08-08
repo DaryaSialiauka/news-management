@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import by.it_academy.bean.User;
 import by.it_academy.dao.DAOProvider;
 import by.it_academy.dao.UserDAO;
+import by.it_academy.dao.exception.DAOException;
 import by.it_academy.service.exception.DataUserValidationException;
 import by.it_academy.service.exception.ValidationAuthenticationException;
 import by.it_academy.util.InputDataUserValidation;
@@ -21,8 +22,11 @@ public class UserDataValidationImpl implements UserDataValidation {
 	private static final int MAX_LENGTH = 10;
 	private static final int MIN_YEAR = 18;
 	private static final int LENGTH_PHONE = 12;
-	private static final String REGEX = "^[a-zA-Z0-9]+" + "((\\.|\\_|-{0,1})[a-zA-Z0-9]+)*" + "@" + "[a-zA-Z0-9]+"
+	private static final String EMAIL_REGEX = "^[a-zA-Z0-9]+" + "((\\.|\\_|-{0,1})[a-zA-Z0-9]+)*" + "@" + "[a-zA-Z0-9]+"
 			+ "((\\.|\\_|-{0,1})[a-zA-Z0-9]+)*" + "\\.[a-zA-Z]{2,}$";
+
+	private static final String PASSWORD_REGEX = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{" + MIN_LENGTH + "," + MAX_LENGTH
+			+ "})";
 
 	private final static UserDAO provider = DAOProvider.getInstance().getUserDAO();
 
@@ -30,53 +34,58 @@ public class UserDataValidationImpl implements UserDataValidation {
 	public boolean userDataCheck(User user) throws DataUserValidationException {
 
 		List<InputDataUserValidation> errorList = new ArrayList<InputDataUserValidation>();
-		if (!checkLogin(user.getLogin())) {
-			errorList.add(InputDataUserValidation.LOGIN_ERROR);
-		}
+		try {
+			if (!checkLogin(user.getLogin())) {
+				errorList.add(InputDataUserValidation.LOGIN_ERROR);
+			}
 
-		if (findLogin(user.getLogin())) {
-			errorList.add(InputDataUserValidation.LOGIN_FOUND);
-		}
+			if (findLogin(user.getLogin())) {
+				errorList.add(InputDataUserValidation.LOGIN_FOUND);
+			}
 
-		if (!checkEmail(user.getEmail())) {
-			errorList.add(InputDataUserValidation.EMAIL_ERROR);
-		}
+			if (!checkEmail(user.getEmail())) {
+				errorList.add(InputDataUserValidation.EMAIL_ERROR);
+			}
 
-		if (findEmail(user.getEmail())) {
-			errorList.add(InputDataUserValidation.EMAIL_FOUND);
-		}
+			if (findEmail(user.getEmail())) {
+				errorList.add(InputDataUserValidation.EMAIL_FOUND);
+			}
 
-		if (!checkPassword(user.getPassword())) {
-			errorList.add(InputDataUserValidation.PASSWORD_ERROR);
-		}
+			if (!checkPassword(user.getPassword())) {
+				errorList.add(InputDataUserValidation.PASSWORD_ERROR);
+			}
 
-		if (!checkFirstname(user.getFirstname())) {
-			errorList.add(InputDataUserValidation.FIRSTNAME_ERROR);
-		}
+			if (!checkFirstname(user.getFirstname())) {
+				errorList.add(InputDataUserValidation.FIRSTNAME_ERROR);
+			}
 
-		if (!checkLastname(user.getLastname())) {
-			errorList.add(InputDataUserValidation.LASTNAME_ERROR);
-		}
+			if (!checkLastname(user.getLastname())) {
+				errorList.add(InputDataUserValidation.LASTNAME_ERROR);
+			}
 
-		if (!checkPhone(user.getPhone())) {
-			errorList.add(InputDataUserValidation.PHONE_ERROR);
-		}
+			if (!checkPhone(user.getPhone())) {
+				errorList.add(InputDataUserValidation.PHONE_ERROR);
+			}
 
-		if (findPhone(user.getPhone())) {
-			errorList.add(InputDataUserValidation.PHONE_FOUND);
-		}
+			if (findPhone(user.getPhone())) {
+				errorList.add(InputDataUserValidation.PHONE_FOUND);
+			}
 
-		if (!checkDatebirth(user.getDatebirth())) {
-			errorList.add(InputDataUserValidation.DATEBIRTH_ERROR);
-		}
+			if (!checkDatebirth(user.getDatebirth())) {
+				errorList.add(InputDataUserValidation.DATEBIRTH_ERROR);
+			}
 
-		if (!minDatebirth(user.getDatebirth())) {
-			errorList.add(InputDataUserValidation.DATEBIRTH_MIN);
+			if (!minDatebirth(user.getDatebirth())) {
+				errorList.add(InputDataUserValidation.DATEBIRTH_MIN);
+			}
+		} catch (DAOException e) {
+			throw new DataUserValidationException("Error. Please try again later.");
 		}
 
 		if (!errorList.isEmpty()) {
 			throw new DataUserValidationException(errorList, "User not added");
 		}
+
 		return true;
 
 	}
@@ -95,7 +104,7 @@ public class UserDataValidationImpl implements UserDataValidation {
 		return check;
 	}
 
-	private static boolean findLogin(String login) {
+	private static boolean findLogin(String login) throws DAOException {
 		boolean find = true;
 		find = provider.findLogin(login);
 		return find;
@@ -121,9 +130,14 @@ public class UserDataValidationImpl implements UserDataValidation {
 			check = false;
 		}
 
-		if (password.length() < MIN_LENGTH || password.length() > MAX_LENGTH) {
-			check = false;
-		}
+		Pattern pattern;
+		Matcher matcher;
+
+		pattern = Pattern.compile(PASSWORD_REGEX);
+		matcher = pattern.matcher(password);
+
+		check = matcher.matches();
+
 		return check;
 	}
 
@@ -132,13 +146,13 @@ public class UserDataValidationImpl implements UserDataValidation {
 		Pattern pattern;
 		Matcher matcher;
 
-		pattern = Pattern.compile(REGEX);
+		pattern = Pattern.compile(EMAIL_REGEX);
 		matcher = pattern.matcher(email);
 
 		return matcher.matches();
 	}
 
-	private static boolean findEmail(String email) {
+	private static boolean findEmail(String email) throws DAOException {
 		boolean find = true;
 		find = provider.findEmail(email);
 		return find;
@@ -176,7 +190,7 @@ public class UserDataValidationImpl implements UserDataValidation {
 		return check;
 	}
 
-	private static boolean findPhone(String phone) {
+	private static boolean findPhone(String phone) throws DAOException {
 		boolean find = true;
 		find = provider.findPhone(phone);
 		return find;
@@ -192,9 +206,7 @@ public class UserDataValidationImpl implements UserDataValidation {
 		Calendar now = new GregorianCalendar();
 
 		now.add(Calendar.YEAR, (-1 * datebirth.get(Calendar.YEAR)));
-
 		now.add(Calendar.MONTH, (-1 * datebirth.get(Calendar.MONTH)));
-
 		now.add(Calendar.DAY_OF_MONTH, (-1 * datebirth.get(Calendar.DAY_OF_MONTH)));
 
 		return (now.get(Calendar.YEAR) > MIN_YEAR);

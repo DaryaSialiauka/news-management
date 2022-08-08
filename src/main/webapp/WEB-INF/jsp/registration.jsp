@@ -68,7 +68,7 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
     <div class="col-6 offset-3 form-floating mb-2">
       <input
         type="text"
-        class="form-control ${param.login_error_style}"
+        class="form-control ${param.login_error_style} ${param.login_found_style}"
         id="login"
         name="login"
         value="${sessionScope.userbean.login}"
@@ -78,13 +78,14 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
       <label for="login" class="form-label">Login</label>
       <div id="loginFeedback" class="invalid-feedback d-block">
         <c:out value="${param.login_error}" />
+        <c:out value="${param.login_found}" />
       </div>
     </div>
 
     <div class="col-6 offset-3 form-floating mb-2">
       <input
         type="email"
-        class="form-control form-control-sm ${param.email_error_style}"
+        class="form-control form-control-sm ${param.email_error_style} ${param.email_found_style}"
         id="email"
         name="email"
         value="${sessionScope.userbean.email}"
@@ -94,13 +95,14 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
       <label for="email" class="form-label">Email</label>
       <div id="emailFeedback" class="invalid-feedback d-block">
         <c:out value="${param.email_error}" />
+        <c:out value="${param.email_found}" />
       </div>
     </div>
 
     <div class="col-6 offset-3 form-floating mb-2">
       <input
         type="text"
-        class="form-control form-control-sm ${param.phone_error_style}"
+        class="form-control form-control-sm ${param.phone_error_style} ${param.phone_found_style}"
         id="phone"
         name="phone"
         value="${sessionScope.userbean.phone}"
@@ -111,6 +113,7 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
       <label for="phone" class="form-label">Phone</label>
       <div id="phoneFeedback" class="invalid-feedback d-block">
         <c:out value="${param.phone_error}" />
+        <c:out value="${param.phone_found}" />
       </div>
     </div>
 

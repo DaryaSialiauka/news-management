@@ -4,7 +4,7 @@ package by.it_academy.bean;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class User {
+public class User implements Cloneable{
  
 	private String firstname;
 	private String lastname;
@@ -35,6 +35,17 @@ public class User {
 		this.email = email;
 		this.datebirth = datebirth;
 		this.role = role;
+	}
+	
+	public User(User user) {
+		this.firstname = user.getFirstname();
+		this.lastname = user.getLastname();
+		this.login = user.getLogin();
+		this.password = "";
+		this.phone = user.getPhone();
+		this.email = user.getEmail();
+		this.datebirth = user.getDatebirth();
+		this.role = Role.USER;
 	}
 
 	public String getFirstname() {
@@ -170,6 +181,8 @@ public class User {
 		return "User [firstname=" + firstname + ", lastname=" + lastname + ", login=" + login + ", password=" + password
 				+ ", phone=" + phone + ", email=" + email + ", datebirth=" + datebirth + ", role=" + role + "]";
 	}
+	
+	
 
 	
 }

@@ -33,14 +33,20 @@ public class DoRegistration implements Command {
 
 		boolean add = false;
 		String path;
+		User user;
+		User userForSession;
+		
 
-		User user = reqToUser(request);
+		user = reqToUser(request);
+
+		userForSession = new User(user);
 		
 		try {
-			addSessionUser(user,request);
+			addUserSession(userForSession,request);
 			add = provider.addUser(user);
 			if (add) {
-				delSessionUser(request);
+				delUserSession(request);
+				addRoleSession(user, request);
 				path = request.getContextPath() + "?";
 				response.sendRedirect(path);
 			} else {
@@ -52,7 +58,7 @@ public class DoRegistration implements Command {
 
 		} catch (DataUserValidationException e) {
 
-			userNotAdded(errorListInput(e), response);
+			userNotAdded(errorListInput(e), response); 
 
 		}
 	}
@@ -108,14 +114,20 @@ public class DoRegistration implements Command {
 		return cal;      
 	}
 	 
-	private static void addSessionUser(User user, HttpServletRequest request) {
+	private static void addUserSession(User user, HttpServletRequest request) {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("userbean", user);
 	}
 	
-	private static void delSessionUser(HttpServletRequest request) {
+	private static void delUserSession(HttpServletRequest request) {
 		HttpSession session = request.getSession(true);
 		session.removeAttribute("userbean");  
+	}
+	
+	private static void addRoleSession(User user, HttpServletRequest request) {
+		HttpSession session = request.getSession(true);
+		session.setAttribute(Attribute.USER, Attribute.USER_ACTIV);
+		session.setAttribute(Attribute.ROLE, user.getRole());
 	}
 
 }

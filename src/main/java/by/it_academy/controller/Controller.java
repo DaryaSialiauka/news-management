@@ -2,6 +2,10 @@ package by.it_academy.controller;
 
 import jakarta.servlet.http.HttpServlet;
 import java.io.IOException;
+
+import by.it_academy.dao.util.ConnectionPool;
+import by.it_academy.dao.util.ConnectionPoolException;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,6 +15,8 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class Controller extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	private static ConnectionPool provider;
 	
 	private static final String commandStr = "command";
 	
@@ -41,5 +47,26 @@ public class Controller extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
+
+	@Override
+	public void init(ServletConfig config) throws ServletException {
+		super.init(config);
+		provider = ConnectionPool.getInstance();
+		try {
+			provider.initPoolData();
+		} catch (ConnectionPoolException e) {
+			//Logger
+		}
+	}
+
+	@Override
+	public void destroy() {
+		super.destroy();
+		provider.dispose();
+	}
+	
+	
+	
+	
 
 }
