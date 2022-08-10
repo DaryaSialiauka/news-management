@@ -2,7 +2,8 @@ package by.it_academy.bean;
 
 public enum Role {
 	ADMIN("admin"), 
-	USER("user");
+	USER("user"),
+	REPORTER("reporter");
 
 	private final String title;
 

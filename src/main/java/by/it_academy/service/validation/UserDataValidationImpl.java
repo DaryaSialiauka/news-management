@@ -17,15 +17,15 @@ import by.it_academy.util.InputDataUserValidation;
 
 public class UserDataValidationImpl implements UserDataValidation {
 
-	private static final String NULL_STR = null;
-	private static final int MIN_LENGTH = 4;
-	private static final int MAX_LENGTH = 10;
-	private static final int MIN_YEAR = 18;
-	private static final int LENGTH_PHONE = 12;
-	private static final String EMAIL_REGEX = "^[a-zA-Z0-9]+" + "((\\.|\\_|-{0,1})[a-zA-Z0-9]+)*" + "@" + "[a-zA-Z0-9]+"
+	private final static String NULL_STR = null;
+	private final static int MIN_LENGTH = 4;
+	private final static int MAX_LENGTH = 10;
+	private final static int MIN_YEAR = 18;
+	private final static int LENGTH_PHONE = 12;
+	private final static String EMAIL_REGEX = "^[a-zA-Z0-9]+" + "((\\.|\\_|-{0,1})[a-zA-Z0-9]+)*" + "@" + "[a-zA-Z0-9]+"
 			+ "((\\.|\\_|-{0,1})[a-zA-Z0-9]+)*" + "\\.[a-zA-Z]{2,}$";
 
-	private static final String PASSWORD_REGEX = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{" + MIN_LENGTH + "," + MAX_LENGTH
+	private final static String PASSWORD_REGEX = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{" + MIN_LENGTH + "," + MAX_LENGTH
 			+ "})";
 
 	private final static UserDAO provider = DAOProvider.getInstance().getUserDAO();
@@ -82,7 +82,7 @@ public class UserDataValidationImpl implements UserDataValidation {
 			throw new DataUserValidationException("Error. Please try again later.");
 		}
 
-		if (!errorList.isEmpty()) {
+		if (!errorList.isEmpty()) {	
 			throw new DataUserValidationException(errorList, "User not added");
 		}
 
@@ -105,9 +105,7 @@ public class UserDataValidationImpl implements UserDataValidation {
 	}
 
 	private static boolean findLogin(String login) throws DAOException {
-		boolean find = true;
-		find = provider.findLogin(login);
-		return find;
+		return provider.findLogin(login);
 	}
 
 	private static boolean checkLogin(String login) {
@@ -153,9 +151,7 @@ public class UserDataValidationImpl implements UserDataValidation {
 	}
 
 	private static boolean findEmail(String email) throws DAOException {
-		boolean find = true;
-		find = provider.findEmail(email);
-		return find;
+		return provider.findEmail(email);
 	}
 
 	private static boolean checkFirstname(String firstname) {
@@ -191,9 +187,7 @@ public class UserDataValidationImpl implements UserDataValidation {
 	}
 
 	private static boolean findPhone(String phone) throws DAOException {
-		boolean find = true;
-		find = provider.findPhone(phone);
-		return find;
+		return provider.findPhone(phone);
 	}
 
 	private static boolean checkDatebirth(Calendar datebirth) {

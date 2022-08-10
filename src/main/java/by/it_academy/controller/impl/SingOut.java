@@ -3,23 +3,26 @@ package by.it_academy.controller.impl;
 import java.io.IOException;
 
 import by.it_academy.controller.Command;
-import by.it_academy.util.Attribute;
+import by.it_academy.util.AttributeAndParameter;
 import by.it_academy.util.JSPPageName;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 public class SingOut implements Command {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		request.getSession(true).setAttribute(Attribute.USER, Attribute.USER_NOT_ACTIV);
-		request.getSession(true).removeAttribute(Attribute.ROLE);
-		request.removeAttribute(Attribute.ERROR_AUTHENTICATION);
+		HttpSession session = request.getSession(true);
+
+		session.setAttribute(AttributeAndParameter.USER, AttributeAndParameter.USER_NOT_ACTIV);
+		session.removeAttribute(AttributeAndParameter.ROLE);
+		session.removeAttribute(AttributeAndParameter.ID);
+		request.removeAttribute(AttributeAndParameter.ERROR_AUTHENTICATION);
 		request.getRequestDispatcher(JSPPageName.BASE_PAGE).forward(request, response);
-		
+
 	}
 
-	
 }

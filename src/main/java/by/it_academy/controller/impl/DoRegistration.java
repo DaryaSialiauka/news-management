@@ -9,12 +9,13 @@ import java.util.List;
 
 import by.it_academy.bean.Role;
 import by.it_academy.bean.User;
+import by.it_academy.bean.UserDataService;
 import by.it_academy.controller.Command;
 import by.it_academy.service.ServiceProvider;
 import by.it_academy.service.UserService;
 import by.it_academy.service.exception.AddUserServiseException;
 import by.it_academy.service.exception.DataUserValidationException;
-import by.it_academy.util.Attribute;
+import by.it_academy.util.AttributeAndParameter;
 import by.it_academy.util.InputDataUserValidation;
 import by.it_academy.util.JSPPageName;
 import jakarta.servlet.ServletException;
@@ -31,34 +32,34 @@ public class DoRegistration implements Command {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		boolean add = false;
+		int idUser = 0;
 		String path;
 		User user;
-		User userForSession;
-		
+		UserDataService userForSession;
 
 		user = reqToUser(request);
 
-		userForSession = new User(user);
-		
+		userForSession = new UserDataService(user);
+
 		try {
-			addUserSession(userForSession,request);
-			add = provider.addUser(user);
-			if (add) {
-				delUserSession(request);
-				addRoleSession(user, request);
-				path = request.getContextPath() + "?";
-				response.sendRedirect(path);
-			} else {
-				userNotAdded("", response);
+			addUserSession(userForSession, request);
+			idUser = provider.addUser(user);
+			if (idUser == 0) {
+				userNotAddedRedirect(response, "");
 			}
+
+			delUserSession(request);
+			addRoleSession(idUser, user, request);
+			path = request.getContextPath() + "?";
+			response.sendRedirect(path);
+
 		} catch (AddUserServiseException e) {
 
-			userNotAdded("", response);
+			userNotAddedRedirect(response, "");
 
 		} catch (DataUserValidationException e) {
 
-			userNotAdded(errorListInput(e), response); 
+			userNotAddedRedirect(response, errorListInput(e));
 
 		}
 	}
@@ -71,63 +72,67 @@ public class DoRegistration implements Command {
 		errorList = e.getErrorList();
 
 		for (InputDataUserValidation error : errorList) {
-			param += Attribute.SEPARATOR + Attribute.styleError(error.nameToLower()) + Attribute.EQUALS
-					+ Attribute.ERROR_STYLE;
-			param += Attribute.SEPARATOR + error.nameToLower() + Attribute.EQUALS + error.getTitle();
+			param += AttributeAndParameter.SEPARATOR + AttributeAndParameter.styleError(error.nameToLower())
+					+ AttributeAndParameter.EQUALS + AttributeAndParameter.ERROR_STYLE;
+			param += AttributeAndParameter.SEPARATOR + error.nameToLower() + AttributeAndParameter.EQUALS
+					+ error.getTitle();
 		}
 		return param;
 
 	}
 
-	private static void userNotAdded(String param, HttpServletResponse response) throws ServletException, IOException {
+	private static void userNotAddedRedirect(HttpServletResponse response, String param)
+			throws ServletException, IOException {
 
 		String path = JSPPageName.REGISTER_ERROR_PAGE + param;
 
-		path += Attribute.SEPARATOR + Attribute.BODY + Attribute.EQUALS + Attribute.REGISTRATION;
-		path += Attribute.SEPARATOR + Attribute.ERROR_REGISTRATION + Attribute.EQUALS + Attribute.ERROR_ADD_USER;
+		path += AttributeAndParameter.SEPARATOR + AttributeAndParameter.BODY + AttributeAndParameter.EQUALS
+				+ AttributeAndParameter.REGISTRATION;
+		path += AttributeAndParameter.SEPARATOR + AttributeAndParameter.ERROR_REGISTRATION
+				+ AttributeAndParameter.EQUALS + AttributeAndParameter.ERROR_ADD_USER;
 
 		response.sendRedirect(path);
 	}
 
 	private static User reqToUser(HttpServletRequest request) {
-		String firstname = request.getParameter(Attribute.FIRSTNAME);
-		String lastname = request.getParameter(Attribute.LASTNAME);
-		String login = request.getParameter(Attribute.LOGIN);
-		String password = request.getParameter(Attribute.PASSWORD);
-		String phone = request.getParameter(Attribute.PHONE);
-		String email = request.getParameter(Attribute.EMAIL);
+		String firstname = request.getParameter(AttributeAndParameter.FIRSTNAME);
+		String lastname = request.getParameter(AttributeAndParameter.LASTNAME);
+		String login = request.getParameter(AttributeAndParameter.LOGIN);
+		String password = request.getParameter(AttributeAndParameter.PASSWORD);
+		String phone = request.getParameter(AttributeAndParameter.PHONE);
+		String email = request.getParameter(AttributeAndParameter.EMAIL);
 		Calendar datebirth;
 
 		try {
-			datebirth = strToCalendar(request.getParameter(Attribute.DATEBIRTH));
+			datebirth = strToCalendar(request.getParameter(AttributeAndParameter.DATEBIRTH));
 		} catch (ParseException e1) {
 			datebirth = new GregorianCalendar();
 		}
 		return new User(firstname, lastname, login, password, phone, email, datebirth, Role.USER);
 	}
-   
-	
+
 	private static Calendar strToCalendar(String date) throws ParseException {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		cal.setTime(sdf.parse(date));
-		return cal;      
+		return cal;
 	}
-	 
-	private static void addUserSession(User user, HttpServletRequest request) {
+
+	private static void addUserSession(UserDataService userForSession, HttpServletRequest request) {
 		HttpSession session = request.getSession(true);
-		session.setAttribute("userbean", user);
+		session.setAttribute(AttributeAndParameter.USER_BEAN, userForSession);
 	}
-	
+
 	private static void delUserSession(HttpServletRequest request) {
 		HttpSession session = request.getSession(true);
-		session.removeAttribute("userbean");  
+		session.removeAttribute(AttributeAndParameter.USER_BEAN);
 	}
-	
-	private static void addRoleSession(User user, HttpServletRequest request) {
+
+	private static void addRoleSession(int idUser, User user, HttpServletRequest request) {
 		HttpSession session = request.getSession(true);
-		session.setAttribute(Attribute.USER, Attribute.USER_ACTIV);
-		session.setAttribute(Attribute.ROLE, user.getRole());
+		session.setAttribute(AttributeAndParameter.USER, AttributeAndParameter.USER_ACTIV);
+		session.setAttribute(AttributeAndParameter.ROLE, user.getRole());
+		session.setAttribute(AttributeAndParameter.ID, idUser);
 	}
 
 }
