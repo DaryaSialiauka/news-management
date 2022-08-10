@@ -2,7 +2,6 @@ package by.it_academy.controller.impl;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -16,6 +15,7 @@ import by.it_academy.service.UserService;
 import by.it_academy.service.exception.AddUserServiseException;
 import by.it_academy.service.exception.DataUserValidationException;
 import by.it_academy.util.AttributeAndParameter;
+import by.it_academy.util.DateAndCalendar;
 import by.it_academy.util.InputDataUserValidation;
 import by.it_academy.util.JSPPageName;
 import jakarta.servlet.ServletException;
@@ -27,8 +27,7 @@ public class DoRegistration implements Command {
 
 	UserService provider = ServiceProvider.getInstance().getUserService();
 
-	private static final String DATE_FORMAT = "yyyy-MM-dd";
-
+	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -104,19 +103,14 @@ public class DoRegistration implements Command {
 		Calendar datebirth;
 
 		try {
-			datebirth = strToCalendar(request.getParameter(AttributeAndParameter.DATEBIRTH));
+			datebirth = DateAndCalendar.strToCalendar(request.getParameter(AttributeAndParameter.DATEBIRTH));
 		} catch (ParseException e1) {
 			datebirth = new GregorianCalendar();
 		}
 		return new User(firstname, lastname, login, password, phone, email, datebirth, Role.USER);
 	}
 
-	private static Calendar strToCalendar(String date) throws ParseException {
-		Calendar cal = Calendar.getInstance();
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-		cal.setTime(sdf.parse(date));
-		return cal;
-	}
+	
 
 	private static void addUserSession(UserDataService userForSession, HttpServletRequest request) {
 		HttpSession session = request.getSession(true);
