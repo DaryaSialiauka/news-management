@@ -77,7 +77,7 @@ public class UserDAOImpl implements UserDAO {
 			throw new DAOException("Internal error. Please try later.", e);
 		} catch (AddUserDAOException e) {
 			rollbackConnection(con);
-			throw new AddUserDAOException(e.getMessage(), e);
+			throw new AddUserDAOException(e);
 		} finally {
 			provider.closeConnection(con);
 		}

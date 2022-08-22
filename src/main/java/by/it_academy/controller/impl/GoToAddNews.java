@@ -9,15 +9,16 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class GoToRegistartion implements Command {
+public class GoToAddNews implements Command {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		request.getSession(true).setAttribute("url", JSPPageName.REGISTER_PAGE + AttributeAndParameter.SEPARATOR
-				+ AttributeAndParameter.BODY + AttributeAndParameter.EQUALS + AttributeAndParameter.REGISTRATION);
+		request.getSession(true).setAttribute("url", JSPPageName.ADD_NEWS_PAGE + AttributeAndParameter.SEPARATOR
+				+ AttributeAndParameter.BODY + AttributeAndParameter.EQUALS + AttributeAndParameter.ADD_NEWS);
 		request.getRequestDispatcher(JSPPageName.BASE_PAGE + "?" + AttributeAndParameter.BODY
-				+ AttributeAndParameter.EQUALS + AttributeAndParameter.REGISTRATION).forward(request, response);
+				+ AttributeAndParameter.EQUALS + AttributeAndParameter.ADD_NEWS).forward(request, response);
+
 	}
 
 }

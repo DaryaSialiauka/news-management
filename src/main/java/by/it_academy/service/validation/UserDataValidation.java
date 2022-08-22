@@ -6,8 +6,8 @@ import by.it_academy.service.exception.ValidationAuthenticationException;
 
 public interface UserDataValidation {
 
-	public boolean userDataCheck(User user) throws DataUserValidationException;
+	boolean userDataCheck(User user) throws DataUserValidationException;
 	
-	public boolean loginPasswordCheck(String login, char[] password) throws ValidationAuthenticationException;
+	boolean loginPasswordCheck(String login, char[] password) throws ValidationAuthenticationException;
 	
 }

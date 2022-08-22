@@ -111,7 +111,7 @@ public class NewsDAOImpl implements NewsDAO {
 
 		try {
 			con = provider.takeConnection();
-			getListNews = "SELECT id, title, brief, author_id, date FROM news ORDER BY date DESC LIMIT ? OFFSET ?";
+			getListNews = "SELECT id, title, brief, author_id, date FROM news ORDER BY date DESC, id DESC LIMIT ? OFFSET ?";
 
 			ps = con.prepareStatement(getListNews);
 			

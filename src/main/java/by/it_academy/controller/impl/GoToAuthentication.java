@@ -13,8 +13,11 @@ public class GoToAuthentication implements Command {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		request.getRequestDispatcher(JSPPageName.BASE_PAGE+"?"+AttributeAndParameter.BODY + AttributeAndParameter.EQUALS + AttributeAndParameter.SINGIN).forward(request, response);
+
+		request.getSession(true).setAttribute("url", JSPPageName.SING_IN_PAGE + AttributeAndParameter.SEPARATOR
+				+ AttributeAndParameter.BODY + AttributeAndParameter.EQUALS + AttributeAndParameter.SINGIN);
+		request.getRequestDispatcher(JSPPageName.BASE_PAGE + "?" + AttributeAndParameter.BODY
+				+ AttributeAndParameter.EQUALS + AttributeAndParameter.SINGIN).forward(request, response);
 
 	}
 

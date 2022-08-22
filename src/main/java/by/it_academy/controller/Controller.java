@@ -33,7 +33,7 @@ public class Controller extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		execute(request, response);
+		doProcess(request, response);
 
 	}
 
@@ -43,10 +43,10 @@ public class Controller extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		execute(request, response);
+		doProcess(request, response);
 	}
 
-	private void execute(HttpServletRequest request, HttpServletResponse response)
+	private void doProcess(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String commandName = request.getParameter(commandStr);
 		Command command = commandProvider.getCommand(commandName);

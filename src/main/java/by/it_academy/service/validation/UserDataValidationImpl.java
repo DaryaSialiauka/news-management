@@ -82,7 +82,7 @@ public class UserDataValidationImpl implements UserDataValidation {
 			throw new DataUserValidationException("Error. Please try again later.");
 		}
 
-		if (!errorList.isEmpty()) {	
+		if (!errorList.isEmpty()) {
 			throw new DataUserValidationException(errorList, "User not added");
 		}
 
@@ -109,9 +109,9 @@ public class UserDataValidationImpl implements UserDataValidation {
 	}
 
 	private static boolean checkLogin(String login) {
-
+		// TODO
 		boolean check = true;
-		if ((login == NULL_STR) && (login.isEmpty())) {
+		if ((login == NULL_STR) || (login.isEmpty())) {
 			check = false;
 		}
 
@@ -122,7 +122,7 @@ public class UserDataValidationImpl implements UserDataValidation {
 	}
 
 	private static boolean checkPassword(char[] password) {
-
+		// TODO
 		boolean check = true;
 		if (password.length == 0) {
 			check = false;
@@ -140,7 +140,7 @@ public class UserDataValidationImpl implements UserDataValidation {
 	}
 
 	private static boolean checkEmail(String email) {
-
+		// TODO
 		Pattern pattern;
 		Matcher matcher;
 
@@ -151,31 +151,35 @@ public class UserDataValidationImpl implements UserDataValidation {
 	}
 
 	private static boolean findEmail(String email) throws DAOException {
+
 		return provider.findEmail(email);
 	}
 
 	private static boolean checkFirstname(String firstname) {
+		// TODO
 		boolean check = true;
 
-		if ((firstname == NULL_STR) && (firstname.isEmpty())) {
+		if ((firstname == NULL_STR) || (firstname.isEmpty())) {
 			check = false;
 		}
 		return check;
 	}
 
 	private static boolean checkLastname(String lastname) {
+		// TODO
 		boolean check = true;
 
-		if ((lastname == NULL_STR) && (lastname.isEmpty())) {
+		if ((lastname == NULL_STR) || (lastname.isEmpty())) {
 			check = false;
 		}
 		return check;
 	}
 
 	private static boolean checkPhone(String phone) {
+		// TODO
 		boolean check = true;
 
-		if ((phone == NULL_STR) && (phone.isEmpty())) {
+		if ((phone == NULL_STR) || (phone.isEmpty())) {
 			check = false;
 		}
 
@@ -191,7 +195,7 @@ public class UserDataValidationImpl implements UserDataValidation {
 	}
 
 	private static boolean checkDatebirth(Calendar datebirth) {
-
+		// TODO
 		return true;
 	}
 

@@ -18,7 +18,7 @@ public class SingOut implements Command {
 
 		session.setAttribute(AttributeAndParameter.USER, AttributeAndParameter.USER_NOT_ACTIV);
 		session.removeAttribute(AttributeAndParameter.ROLE);
-		session.removeAttribute(AttributeAndParameter.ID);
+		session.removeAttribute(AttributeAndParameter.USER_ID);
 		String path = request.getContextPath() + "?";
 		response.sendRedirect(path);
 

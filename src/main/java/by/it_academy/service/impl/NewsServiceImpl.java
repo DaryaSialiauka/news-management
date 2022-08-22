@@ -9,25 +9,32 @@ import by.it_academy.dao.exception.AddNewsDAOException;
 import by.it_academy.dao.exception.DAOException;
 import by.it_academy.dao.exception.FindNewsDAOException;
 import by.it_academy.service.NewsService;
+import by.it_academy.service.exception.AddNewsServiceException;
+import by.it_academy.service.exception.DataNewsValidationException;
 import by.it_academy.service.exception.FindNewsServiceException;
 import by.it_academy.service.exception.ServiceException;
+import by.it_academy.service.validation.NewsDataValidation;
+import by.it_academy.service.validation.ValidationProvider;
 
 public class NewsServiceImpl implements NewsService {
 
 	private final static NewsDAO provider = DAOProvider.getInstance().getNewsDAO();
+	private final static NewsDataValidation validProvider = ValidationProvider.getInstance().getNewsDataValidation();
 
 	@Override
-	public int addNews(News news) throws AddNewsDAOException, ServiceException {
+	public int addNews(News news) throws ServiceException, AddNewsServiceException, DataNewsValidationException {
 		int id;
-		try {
+		try {			
+			if(!validProvider.newsDataCheck(news)) {
+				throw new DataNewsValidationException("News not added");
+			}
 			id = provider.addNews(news);
-
 			return id;
+			
 		} catch (AddNewsDAOException e) {
-			throw new AddNewsDAOException(e.getMessage(), e);
+			throw new AddNewsServiceException(e);
 		} catch (DAOException e) {
-			throw new ServiceException(e.getMessage(), e);
-		}
+			throw new ServiceException(e);}
 	}
 
 	@Override
@@ -36,9 +43,9 @@ public class NewsServiceImpl implements NewsService {
 		try {
 			return provider.readNews(id);
 		} catch (FindNewsDAOException e) {
-			throw new FindNewsServiceException(e.getMessage(), e);
+			throw new FindNewsServiceException(e);
 		} catch (DAOException e) {
-			throw new ServiceException(e.getMessage(), e);
+			throw new ServiceException(e);
 		}
 		
 	}
@@ -49,15 +56,14 @@ public class NewsServiceImpl implements NewsService {
 		List<News> newsList = null;
 
 		try {
+			
 			newsList = provider.readNewsList(quantityNewsPage, page);
-
 			return newsList;
 
 		} catch (FindNewsDAOException e) {
-			throw new FindNewsServiceException(e.getMessage(), e);
+			throw new FindNewsServiceException(e);
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
-			throw new ServiceException(e.getMessage(), e);
+			throw new ServiceException(e);
 		}
 	}
 
@@ -78,7 +84,7 @@ public class NewsServiceImpl implements NewsService {
 		try {
 			return provider.quantityNews();
 		} catch (DAOException e) {
-			throw new ServiceException(e.getMessage(), e);
+			throw new ServiceException(e);
 		}
 	}
 

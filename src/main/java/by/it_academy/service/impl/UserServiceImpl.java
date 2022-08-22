@@ -18,8 +18,8 @@ import by.it_academy.service.exception.ServiceException;
 
 public class UserServiceImpl implements UserService {
 
-	private UserDAO provider = DAOProvider.getInstance().getUserDAO();
-	private UserDataValidation validProvider = ValidationProvider.getInstance().getUserDataValidation();
+	private final static UserDAO provider = DAOProvider.getInstance().getUserDAO();
+	private final static UserDataValidation validProvider = ValidationProvider.getInstance().getUserDataValidation();
 
 	public int authentication(String login, char[] password)
 			throws ValidationAuthenticationException, ServiceException, FindUserServiceException {

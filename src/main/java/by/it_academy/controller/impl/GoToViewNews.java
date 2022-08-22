@@ -2,6 +2,9 @@ package by.it_academy.controller.impl;
 
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.it_academy.bean.News;
 import by.it_academy.controller.Command;
 import by.it_academy.service.NewsService;
@@ -16,6 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class GoToViewNews implements Command {
 
+	private final static Logger LOG = LogManager.getLogger(GoToViewNews.class);
 	private final static NewsService provider = ServiceProvider.getInstance().getNewsService();
 
 	@Override
@@ -24,26 +28,34 @@ public class GoToViewNews implements Command {
 		int id;
 		News news = null;
 
+		request.getSession(true).removeAttribute(AttributeAndParameter.NEWS);
+
 		try {
-			id = Integer.parseInt(request.getParameter("id_news"));
+			id = Integer.parseInt(request.getParameter(AttributeAndParameter.NEWS_ID));
 		} catch (NumberFormatException e) {
 			id = 1;
 		}
 
 		try {
 			news = provider.readNews(id);
-			System.out.println(news.toString());
-		} catch (FindNewsServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			request.setAttribute(AttributeAndParameter.NEWS, news);
 
-		request.setAttribute("news", news);
-		request.getRequestDispatcher(JSPPageName.BASE_PAGE + "?" + AttributeAndParameter.BODY
-				+ AttributeAndParameter.EQUALS + AttributeAndParameter.VIEW_NEWS).forward(request, response);
+			request.getSession(true).setAttribute("url", JSPPageName.VIEW_NEWS + AttributeAndParameter.SEPARATOR
+					+ AttributeAndParameter.NEWS_ID + AttributeAndParameter.EQUALS + id);
+			request.getRequestDispatcher(JSPPageName.BASE_PAGE + "?" + AttributeAndParameter.BODY
+					+ AttributeAndParameter.EQUALS + AttributeAndParameter.VIEW_NEWS).forward(request, response);
+
+		} catch (FindNewsServiceException | ServiceException e) {
+			request.getSession(true).setAttribute("url", JSPPageName.VIEW_NEWS + AttributeAndParameter.SEPARATOR
+					+ AttributeAndParameter.NEWS_ID + AttributeAndParameter.EQUALS + id);
+
+			request.getRequestDispatcher(JSPPageName.BASE_PAGE + "?" + AttributeAndParameter.BODY
+					+ AttributeAndParameter.EQUALS + AttributeAndParameter.VIEW_NEWS + AttributeAndParameter.SEPARATOR
+					+ AttributeAndParameter.NEWS_ERROR + AttributeAndParameter.EQUALS + e.getMessage())
+					.forward(request, response);
+			LOG.error(e);
+
+		}
 
 	}
 

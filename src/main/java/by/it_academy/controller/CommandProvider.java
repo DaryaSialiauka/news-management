@@ -4,9 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import by.it_academy.controller.impl.Base;
+import by.it_academy.controller.impl.DoAddNews;
 import by.it_academy.controller.impl.DoAuthentication;
 import by.it_academy.controller.impl.DoRegistration;
+import by.it_academy.controller.impl.GoToAddNews;
 import by.it_academy.controller.impl.GoToAuthentication;
+import by.it_academy.controller.impl.GoToLocal;
 import by.it_academy.controller.impl.GoToRegistartion;
 import by.it_academy.controller.impl.GoToViewNews;
 import by.it_academy.controller.impl.SingOut;
@@ -23,6 +26,9 @@ public final class CommandProvider {
 		commands.put(CommandName.DO_REGISTRATION, new DoRegistration());
 		commands.put(CommandName.DO_SINGOUT, new SingOut());
 		commands.put(CommandName.GO_TO_VIEW_NEWS, new GoToViewNews());
+		commands.put(CommandName.GO_TO_ADD_NEWS, new GoToAddNews());
+		commands.put(CommandName.DO_ADD_NEWS, new DoAddNews());
+		commands.put(CommandName.GO_TO_LOCAL, new GoToLocal());
 		
 	}
 	

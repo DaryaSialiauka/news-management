@@ -43,6 +43,10 @@ prefix="c"%>
               <c:import url="/WEB-INF/jsp/viewnews.jsp" />
             </c:if>
 
+            <c:if test="${param.body eq 'addnews'}">
+              <c:import url="/WEB-INF/jsp/addnews.jsp" />
+            </c:if>
+
           </div>
         </div>
         <div class="card-footer">

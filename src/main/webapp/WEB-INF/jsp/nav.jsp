@@ -6,12 +6,12 @@
   <c:if test="${sessionScope.user eq 'activ'}">
     <div class="col-9 offset-3 bg-white">
       <div class="col-12">
-        <a class="text-center" href="#"
+        <a class="text-center" href="Controller?command=GO_TO_BASE_PAGE&pagenum=1"
           ><img src="./image/plus.svg" alt="" width="15" />News list</a
         >
       </div>
       <div class="col-12">
-        <a class="text-center" href="#"
+        <a class="text-center" href="Controller?command=GO_TO_ADD_NEWS"
           ><img src="./image/plus.svg" alt="" width="15" />Add news</a
         >
       </div>

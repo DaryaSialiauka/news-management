@@ -70,40 +70,48 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
       <c:if
         test="${(sessionScope.role eq 'admin') or (sessionScope.role eq 'reporter')}"
       >
-        <div class="text-end">
-          <input type="submit" class="btn btn-primary" value="Delete" /></div
+        <div class="d-md-flex justify-content-md-end">
+          <input
+            type="submit"
+            class="btn btn-primary me-md-2"
+            value="Delete"
+          /></div
       ></c:if>
     </form>
     <div class="col-12">
-      <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-          <c:forEach var="page" begin="1" end="${requestScope.quantityPage}">
-            <c:if test="${param.pagenum eq page}">
-              <li class="page-item active">
-                <a
-                  class="page-link"
-                  href="Controller?command=GO_TO_BASE_PAGE&pagenum=${page}"
-                  ><c:out value="${page}"
-                /></a>
-              </li>
-            </c:if>
-            <c:if test="${not(param.pagenum eq page)}">
-              <li class="page-item">
-                <a
-                  class="page-link"
-                  href="Controller?command=GO_TO_BASE_PAGE&pagenum=${page}"
-                  ><c:out value="${page}"
-                /></a>
-              </li>
-            </c:if>
-          </c:forEach>
-        </ul>
-      </nav>
+      <c:if test="${sessionScope.user eq 'activ'}">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            <c:forEach var="page" begin="1" end="${requestScope.quantityPage}">
+              <c:if test="${param.pagenum eq page}">
+                <li class="page-item active">
+                  <a
+                    class="page-link"
+                    href="Controller?command=GO_TO_BASE_PAGE&pagenum=${page}"
+                    ><c:out value="${page}"
+                  /></a>
+                </li>
+              </c:if>
+              <c:if test="${not(param.pagenum eq page)}">
+                <li class="page-item">
+                  <a
+                    class="page-link"
+                    href="Controller?command=GO_TO_BASE_PAGE&pagenum=${page}"
+                    ><c:out value="${page}"
+                  /></a>
+                </li>
+              </c:if>
+            </c:forEach>
+          </ul>
+        </nav>
+      </c:if>
     </div>
   </c:if>
   <c:if test="${requestScope.news eq null}">
     <div class="col-6 offset-3">
-      <div class="text-center alert alert-primary">News not found</div>
+      <div class="text-center alert alert-primary">
+        <c:out value="${param.news_error}" />
+      </div>
     </div>
   </c:if>
 </div>

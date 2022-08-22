@@ -6,6 +6,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import by.it_academy.bean.User;
 import by.it_academy.controller.Command;
 import by.it_academy.service.ServiceProvider;
@@ -24,37 +27,33 @@ import jakarta.servlet.http.HttpSession;
 
 public class DoRegistration implements Command {
 
+	private final static Logger LOG = LogManager.getLogger(DoRegistration.class);
 	UserService provider = ServiceProvider.getInstance().getUserService();
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		int idUser = 0;
-		String path;
 		String paramUser;
 		User user;
-
 		user = reqToUser(request);
 		paramUser = addUserToResponse(user);
-		try {
 
+		try {
 			idUser = provider.addUser(user);
 			if (idUser == 0) {
-				userNotAddedRedirect(response, paramUser);
+				LOG.warn("User not added", user.toString());
+				userNotAddedRedirect(request, response, paramUser);
 			}
-
 			addRoleSession(idUser, user, request);
-			path = request.getContextPath() + "?" + AttributeAndParameter.BODY + AttributeAndParameter.EQUALS + AttributeAndParameter.NEWS;
-			response.sendRedirect(path);
+			userAddedRedirect(request, response);
 
 		} catch (AddUserServiceException e) {
-
-			userNotAddedRedirect(response, paramUser);
-
+			LOG.error(e);
+			userNotAddedRedirect(request, response, paramUser);
 		} catch (DataUserValidationException e) {
-
-			userNotAddedRedirect(response, paramUser + errorListInput(e));
-
+			LOG.error(e);
+			userNotAddedRedirect(request, response, paramUser + errorListInput(e));
 		}
 	}
 
@@ -75,10 +74,10 @@ public class DoRegistration implements Command {
 
 	}
 
-	private static void userNotAddedRedirect(HttpServletResponse response, String param)
+	private static void userNotAddedRedirect(HttpServletRequest request, HttpServletResponse response, String param)
 			throws ServletException, IOException {
 
-		String path = JSPPageName.REGISTER_ERROR_PAGE;
+		String path = JSPPageName.REGISTER_PAGE;
 
 		path += AttributeAndParameter.SEPARATOR + AttributeAndParameter.BODY + AttributeAndParameter.EQUALS
 				+ AttributeAndParameter.REGISTRATION;
@@ -87,21 +86,29 @@ public class DoRegistration implements Command {
 
 		path += param;
 
+		request.getSession(true).setAttribute("url", JSPPageName.REGISTER_PAGE);
+
 		response.sendRedirect(path);
 	}
 
+	private static void userAddedRedirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		response.sendRedirect(JSPPageName.LIST_NEWS);
+	}
+
 	private static User reqToUser(HttpServletRequest request) {
-		String firstname = request.getParameter(AttributeAndParameter.FIRSTNAME);
-		String lastname = request.getParameter(AttributeAndParameter.LASTNAME);
-		String login = request.getParameter(AttributeAndParameter.LOGIN);
-		char[] password = request.getParameter(AttributeAndParameter.PASSWORD).toCharArray();
-		String phone = request.getParameter(AttributeAndParameter.PHONE);
-		String email = request.getParameter(AttributeAndParameter.EMAIL);
+		String firstname = request.getParameter(AttributeAndParameter.USER_FIRSTNAME);
+		String lastname = request.getParameter(AttributeAndParameter.USER_LASTNAME);
+		String login = request.getParameter(AttributeAndParameter.USER_LOGIN);
+		char[] password = request.getParameter(AttributeAndParameter.USER_PASSWORD).toCharArray();
+		String phone = request.getParameter(AttributeAndParameter.USER_PHONE);
+		String email = request.getParameter(AttributeAndParameter.USER_EMAIL);
 		Calendar datebirth;
 
 		try {
-			datebirth = DateAndCalendar.strToCalendar(request.getParameter(AttributeAndParameter.DATEBIRTH));
+			datebirth = DateAndCalendar.strToCalendar(request.getParameter(AttributeAndParameter.USER_DATEBIRTH));
 		} catch (ParseException e1) {
+			LOG.error("Error date birth", request.getParameter(AttributeAndParameter.USER_DATEBIRTH));
 			datebirth = new GregorianCalendar();
 		}
 		return new User(firstname, lastname, login, password, formatPhone(phone), email, datebirth, Role.USER);
@@ -109,18 +116,18 @@ public class DoRegistration implements Command {
 
 	private static String addUserToResponse(User user) {
 
-		String path = "";  
-		path += AttributeAndParameter.SEPARATOR + AttributeAndParameter.FIRSTNAME + AttributeAndParameter.EQUALS
+		String path = "";
+		path += AttributeAndParameter.SEPARATOR + AttributeAndParameter.USER_FIRSTNAME + AttributeAndParameter.EQUALS
 				+ user.getFirstname();
-		path += AttributeAndParameter.SEPARATOR + AttributeAndParameter.LASTNAME + AttributeAndParameter.EQUALS
+		path += AttributeAndParameter.SEPARATOR + AttributeAndParameter.USER_LASTNAME + AttributeAndParameter.EQUALS
 				+ user.getLastname();
-		path += AttributeAndParameter.SEPARATOR + AttributeAndParameter.EMAIL + AttributeAndParameter.EQUALS
+		path += AttributeAndParameter.SEPARATOR + AttributeAndParameter.USER_EMAIL + AttributeAndParameter.EQUALS
 				+ user.getEmail();
-		path += AttributeAndParameter.SEPARATOR + AttributeAndParameter.PHONE + AttributeAndParameter.EQUALS
+		path += AttributeAndParameter.SEPARATOR + AttributeAndParameter.USER_PHONE + AttributeAndParameter.EQUALS
 				+ user.getPhone();
-		path += AttributeAndParameter.SEPARATOR + AttributeAndParameter.DATEBIRTH + AttributeAndParameter.EQUALS
+		path += AttributeAndParameter.SEPARATOR + AttributeAndParameter.USER_DATEBIRTH + AttributeAndParameter.EQUALS
 				+ DateAndCalendar.calendarToStr(user.getDatebirth());
-		path += AttributeAndParameter.SEPARATOR + AttributeAndParameter.LOGIN + AttributeAndParameter.EQUALS
+		path += AttributeAndParameter.SEPARATOR + AttributeAndParameter.USER_LOGIN + AttributeAndParameter.EQUALS
 				+ user.getLogin();
 		return path;
 
@@ -130,11 +137,10 @@ public class DoRegistration implements Command {
 		HttpSession session = request.getSession(true);
 		session.setAttribute(AttributeAndParameter.USER, AttributeAndParameter.USER_ACTIV);
 		session.setAttribute(AttributeAndParameter.ROLE, user.getRole().getTitle());
-		session.setAttribute(AttributeAndParameter.ID, idUser);
+		session.setAttribute(AttributeAndParameter.USER_ID, idUser);
 	}
-	
-	private static String formatPhone(String phone) {
 
+	private static String formatPhone(String phone) {
 		return phone.replaceAll("[^0-9]", "");
 	}
 

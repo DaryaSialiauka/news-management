@@ -2,9 +2,11 @@ package by.it_academy.service.validation;
 
 public class ValidationProvider {
 	
-	private static final ValidationProvider instance = new ValidationProvider();
+	private final static ValidationProvider instance = new ValidationProvider();
 	
-	private static final UserDataValidation userDataValidation = new UserDataValidationImpl();
+	private final static UserDataValidation userDataValidation = new UserDataValidationImpl();
+	
+	private final static NewsDataValidation newsDataValidation = new NewsDataValidationImpl();
 	
 	private ValidationProvider() {
 		
@@ -16,5 +18,9 @@ public class ValidationProvider {
 
 	public UserDataValidation getUserDataValidation() {
 		return userDataValidation;
+	}
+	
+	public NewsDataValidation getNewsDataValidation() {
+		return newsDataValidation;
 	}
 }
