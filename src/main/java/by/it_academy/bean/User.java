@@ -1,13 +1,17 @@
 package by.it_academy.bean;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import by.it_academy.util.Role;
 
-public class User {
+public class User implements Serializable{
 
+	private static final long serialVersionUID = -2253278249530924124L;
+	
+	
 	private String firstname;
 	private String lastname;
 	private String login;

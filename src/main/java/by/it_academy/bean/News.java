@@ -1,10 +1,13 @@
 package by.it_academy.bean;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class News {
+public class News implements Serializable{
 
+	private static final long serialVersionUID = 250656662810895313L;
+	
 	private int id;
 	private String title;
 	private String brief;
