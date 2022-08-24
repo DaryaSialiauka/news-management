@@ -39,15 +39,16 @@ public class DoAddNews implements Command {
 		try {
 			News news = reqToNews(request, response);
 
-			id_news = provider.addNews(news);
-
 			request.getSession(true).setAttribute(AttributeAndParameter.NEWS, news);
+			id_news = provider.addNews(news);
+			request.getSession(true).removeAttribute(AttributeAndParameter.NEWS);
 
 			response.sendRedirect(JSPPageName.VIEW_NEWS + AttributeAndParameter.SEPARATOR
 					+ AttributeAndParameter.NEWS_ID + AttributeAndParameter.EQUALS + id_news);
 
 		} catch (AddNewsServiceException | ServiceException e) {
 			LOG.error(e);
+
 			request.getSession(true).setAttribute("url", JSPPageName.ADD_NEWS_PAGE);
 
 			response.sendRedirect(JSPPageName.ADD_NEWS_PAGE + AttributeAndParameter.SEPARATOR
@@ -104,10 +105,11 @@ public class DoAddNews implements Command {
 		Iterator<Map.Entry<InputDataNewsValidation, String>> entries = e.getValidMap().entrySet().iterator();
 		while (entries.hasNext()) {
 			Map.Entry<InputDataNewsValidation, String> entry = entries.next();
-			param += AttributeAndParameter.SEPARATOR + AttributeAndParameter.styleError(entry.getKey().name().toLowerCase())
+			param += AttributeAndParameter.SEPARATOR
+					+ AttributeAndParameter.styleError(entry.getKey().name().toLowerCase())
 					+ AttributeAndParameter.EQUALS + AttributeAndParameter.ERROR_STYLE;
-			param += AttributeAndParameter.SEPARATOR + entry.getKey().name().toLowerCase() + AttributeAndParameter.EQUALS
-					+ entry.getValue();
+			param += AttributeAndParameter.SEPARATOR + entry.getKey().name().toLowerCase()
+					+ AttributeAndParameter.EQUALS + entry.getValue();
 		}
 
 		LOG.info(param);

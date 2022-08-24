@@ -124,7 +124,7 @@ public class ValidationUserData {
 				return this;
 			}
 			
-			if(checkPassword(password)) {
+			if(!checkPassword(password)) {
 				validData.put(InputDataUserValidation.PASSWORD_ERROR, "Password error.");
 			}
 

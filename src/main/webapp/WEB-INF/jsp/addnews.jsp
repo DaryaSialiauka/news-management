@@ -24,7 +24,7 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
         class="form-control ${param.title_error_style}"
         id="title"
         name="title"
-        value="${requestScope.news.title}"
+        value="${sessionScope.news.title}"
         placeholder="Title"
         required
       />
@@ -37,14 +37,14 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
     <fmt:formatDate
       var="date_news_format"
-      value="${requestScope.news.date_create.time}"
+      value="${sessionScope.news.date_create.time}"
       pattern="yyyy-MM-dd"
     />
 
     <div class="col-8 py-3">
       <input
         type="date"
-        class="form-control ${param.date_error_style}"
+        class="form-control ${param.date_error_style}" 
         id="date_news"
         name="date_news"
         value="${date_news_format}"
@@ -63,11 +63,10 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
         class="form-control ${param.brief_error_style}"
         id="brief"
         name="brief"
-        value="${requestScope.news.brief}"
         placeholder="Brief"
         style="height: 50px"
         required
-      ></textarea>
+      ><c:out value="${sessionScope.news.brief}"/></textarea>
     </div>
     <div id="briefFeedback" class="invalid-feedback d-block text-center">
       <c:out value="${param.brief_error}" />
@@ -79,11 +78,10 @@ prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
         class="form-control ${param.content_error_style}"
         id="content"
         name="content"
-        value="${requestScope.news.content}"
         placeholder="Content"
         style="height: 100px"
         required
-      ></textarea>
+      ><c:out value="${sessionScope.news.content}"/></textarea>
     </div>
     <div id="contentFeedback" class="invalid-feedback d-block text-center">
       <c:out value="${param.content_error}" />
