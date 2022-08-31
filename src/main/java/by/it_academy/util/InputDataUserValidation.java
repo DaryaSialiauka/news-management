@@ -1,0 +1,17 @@
+package by.it_academy.util;
+
+public enum InputDataUserValidation {
+
+	LOGIN_ERROR,
+	LOGIN_FOUND,
+	PASSWORD_ERROR,
+	FIRSTNAME_ERROR,
+	LASTNAME_ERROR,
+	EMAIL_ERROR,
+	EMAIL_FOUND,
+	PHONE_ERROR,
+	PHONE_FOUND,
+	DATEBIRTH_ERROR,
+	DATEBIRTH_MIN;
+	
+}

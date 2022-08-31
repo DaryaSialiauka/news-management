@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+body {
+	background-image: url(../image/background.jpg); 
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-attachment: fixed;
+} 
+
+.hat {
+	height: 12vh;
+}
+
+.bodyheight {
+	height: 82vh;
+}
